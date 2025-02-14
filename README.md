@@ -51,5 +51,10 @@ streamlit run app.py
 - Malayalam
 - Kannada
 - Tamil
+## Results
+
+### Transcription Output
+![Transcription Step 1](images/1.png)
+![Transcription Step 2](images/2.png)
 
 
