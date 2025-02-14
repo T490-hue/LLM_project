@@ -52,11 +52,7 @@ streamlit run app.py
 - Kannada
 - Tamil
 ## Results
-
-### Transcription Output
-![Transcription Step 1](https://user-images.githubusercontent.com/your-image.png)
-![Transcription Step 2](https://user-images.githubusercontent.com/your-image2.png)
-![Transcription Step 1](images/1.png)
-![Transcription Step 2](images/2.png)
+!(images/1.png)
+!(images/2.png)
 
 
