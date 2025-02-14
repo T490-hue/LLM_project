@@ -21,13 +21,8 @@ Ensure you have the following installed:
 - IndicTransToolkit
 - Google Generative AI API
 
-### Clone the Repository
-```sh
-git clone https://github.com/YOUR_GITHUB_LINK.git
-cd Notes-Generation
-```
 
-### Create Virtual Environment (Optional)
+### Create Virtual Environment 
 ```sh
 python -m venv new_env
 source new_env/bin/activate  # macOS/Linux
