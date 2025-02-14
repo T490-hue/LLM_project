@@ -52,4 +52,10 @@ streamlit run app.py
 - Kannada
 - Tamil
 
+## Results
+
+### Transcription Output
+(images/1.png)
+(images/2.png)
+
 
