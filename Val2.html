@@ -1,0 +1,69 @@
+
+1️⃣ Generate a new SSH key
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+
+Replace "your_email@example.com" with your GitHub email.
+
+Press Enter to accept the default file location (~/.ssh/id_ed25519).
+
+Optionally, enter a passphrase (adds extra security).
+
+2️⃣ Start the ssh-agent and add your key
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+3️⃣ Copy the public key
+cat ~/.ssh/id_ed25519.pub
+
+
+This prints a long string starting with ssh-ed25519 ...
+
+Copy it to your clipboard.
+
+4️⃣ Add the key to GitHub
+
+Go to GitHub → Settings → SSH and GPG keys → New SSH key
+
+Title it something like "My DevOps PC"
+
+Paste the public key
+
+Click Add SSH key
+
+5️⃣ Change your Git remote to use SSH
+git remote set-url origin git@github.com:T490-hue/devops_project.git
+
+
+Check with:
+
+git remote -v
+
+
+You should now see:
+
+origin  git@github.com:T490-hue/devops_project.git (fetch)
+origin  git@github.com:T490-hue/devops_project.git (push)
+
+6️⃣ Push your code
+git push -u origin master
+
+
+
+
+
+
+
+
+
+
+
+
+O6)
+(venv) ritlab-01@ritlab01-ThinkCentre-M70t-Gen-3:~$ sudo curl -fsSL https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
+(venv) ritlab-01@ritlab01-ThinkCentre-M70t-Gen-3:~$ sudo chmod +x /usr/local/bin/kubectl
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+sudo usermod -aG docker $USER
+newgrp docker
+minikube start
