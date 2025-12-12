@@ -1,0 +1,306 @@
+Here you go — ALL answers for ALL 8 questions, fully completed with commands + code, exactly as required in the internal questions PDF you shared (and matching the same structure) → Everything in one place.
+(All content is taken from the document )
+
+
+---
+
+✅ 1 — Create User Registration Form + Git Setup
+
+✔ index.html
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Event Registration</title>
+</head>
+<body>
+<h1>Event Registration</h1>
+<form id="regForm" action="#" method="post">
+<label>Name: <input type="text" name="name" required></label><br>
+<label>Email: <input type="email" name="email" required></label><br>
+<label>Phone: <input type="tel" name="phone" required></label><br>
+<button type="submit">Register</button>
+</form>
+</body>
+</html>
+
+✔ Git Commands
+
+mkdir student-portal && cd student-portal
+git init
+git add index.html
+git commit -m "Initial commit: add registration form"
+git branch -M main
+git remote add origin https://github.com/<your-username>/student-portal.git
+git push -u origin main
+
+
+
+
+---
+
+✅ 2 — Create update-form branch → Add Department → Merge & Push
+
+✔ Create branch & edit form
+
+git checkout -b update-form
+
+Add inside index.html:
+
+<label>Department: <input type="text" name="department" required></label><br>
+
+✔ Commit changes
+
+git add index.html
+git commit -m "Add Department field to registration form"
+
+✔ Merge to main
+
+git checkout main
+git merge update-form
+git push origin main
+git branch -d update-form
+git push origin --delete update-form
+
+
+
+
+---
+
+✅ 3 — Jenkins CI Setup + Webhook + Auto Build
+
+✔ Jenkins Freestyle Job Steps
+
+1. Jenkins → New Item → Freestyle project
+
+
+2. Source Code Management → Git
+
+Repo URL:
+
+https://github.com/<username>/student-portal.git
+
+
+
+3. Build Triggers → GitHub hook trigger for GITScm polling
+
+
+4. Build → Execute Shell:
+
+
+
+echo "Building student-portal"
+ls -la
+echo "Contents of index.html:"
+sed -n '1,80p' index.html
+
+✔ GitHub Webhook
+
+Add webhook:
+
+http://<jenkins-ip>:8080/github-webhook/
+
+✔ Make an update to trigger build
+
+git checkout -b tiny-update
+sed -i "s/Event Registration/Event Registration - Updated/" index.html
+git add index.html
+git commit -m "Tiny update: CI test"
+git push -u origin tiny-update
+git checkout main
+git merge tiny-update
+git push origin main
+
+Jenkins should auto-build.
+
+
+
+---
+
+✅ 4 — Simple Flask App + Dockerfile + Docker Run
+
+✔ app.py
+
+from flask import Flask, render_template_string
+app = Flask(__name__)
+
+HTML = """
+<!doctype html>
+<html><body>
+<h1>Student Portal</h1>
+<p>Registration form:</p>
+<form>
+Name: <input name="name"><br>
+Email: <input name="email"><br>
+Phone: <input name="phone"><br>
+Department: <input name="department"><br>
+</form>
+</body></html>
+"""
+
+@app.route("/")
+def home():
+    return render_template_string(HTML)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+✔ requirements.txt
+
+Flask==2.3.2
+
+✔ Dockerfile
+
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py .
+EXPOSE 5000
+CMD ["python", "app.py"]
+
+✔ Docker commands
+
+docker build -t student-portal:v1 .
+docker run -d --name student-portal -p 5000:5000 student-portal:v1
+
+
+
+
+---
+
+✅ 5 — Docker Operations: ps, stop, rm, rmi
+
+docker ps            # list running containers
+docker ps -a         # list all containers
+docker images        # list images
+docker stop student-portal
+docker rm student-portal
+docker rmi student-portal:v1
+
+
+
+
+---
+
+✅ 6 — Kubernetes Deployment
+
+✔ deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-portal-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-portal
+  template:
+    metadata:
+      labels:
+        app: student-portal
+    spec:
+      containers:
+      - name: student-portal
+        image: <your-dockerhub>/student-portal:v1
+        ports:
+        - containerPort: 5000
+
+✔ Commands
+
+kubectl apply -f deployment.yaml
+kubectl get deployments
+kubectl get pods -l app=student-portal
+kubectl logs <pod-name>
+
+
+
+
+---
+
+✅ 7 — NodePort Service + Scaling
+
+✔ service-nodeport.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-portal-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: student-portal
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30080
+
+✔ Commands
+
+kubectl apply -f service-nodeport.yaml
+kubectl get svc student-portal-nodeport
+kubectl get nodes -o wide   # get node IP
+
+Access:
+
+http://<node-ip>:30080
+
+✔ Scale to 3 replicas
+
+kubectl scale deployment student-portal-deploy --replicas=3
+kubectl get pods -l app=student-portal
+
+
+
+
+---
+
+✅ 8 — ML Environment Setup + requirements + Notebook
+
+✔ requirements-ml.txt
+
+numpy==1.26.2
+pandas==2.2.2
+scikit-learn==1.3.2
+jupyterlab==4.1.0
+
+✔ Create venv & install
+
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements-ml.txt
+pip freeze | grep -E "numpy|pandas|scikit-learn|jupyter"
+
+✔ Notebook code
+
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+print("numpy:", np.__version__)
+print("pandas:", pd.__version__)
+
+X = np.array([[1],[2],[3],[4]])
+y = np.array([2,4,6,8])
+
+model = LinearRegression().fit(X, y)
+print("coef:", model.coef_, "intercept:", model.intercept_)
+
+✔ Commit notebook
+
+git add requirements-ml.txt ml_setup.ipynb
+git commit -m "Add ML environment setup"
+git push origin main
+
+
+
+
+---
+
+🎉 EVERYTHING is now complete.
+
+If you want, I can combine everything into a single final PDF for submission.
